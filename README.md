@@ -1,65 +1,143 @@
-# MedHerbAI
-# FastAPI and PostgreSQL in Docker
+🛍️ Exploratory Data Analysis & Customer Purchase Behavior Analysis in Retail
 
-This repository provides a simple example of setting up a FastAPI application with a PostgreSQL database using Docker for containerization. It demonstrates how to create a RESTful API using FastAPI and use a PostgreSQL database as the backend storage.
+📌 Problem Statement
 
-## Prerequisites
+A retail company wants to understand customer purchase behavior and determine how demographic and product-related features influence spending patterns.
 
-Before you begin, ensure you have the following dependencies installed on your system:
+The objective is to build a predictive model that estimates purchase amount based on customer attributes.
+Insights from this project will help the company:
 
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
+🎯 Personalize offers
 
-## Getting Started
+💰 Optimize marketing campaigns
 
-## API Documentation
-The FastAPI application provides the following endpoints:
+🤝 Improve customer engagement
 
-- **`GET /plants/{plant_id}`**: Retrieve a plant with plant_id
-- **`GET /details/(plant_id)`**: Retrieve details of plant with plant_id
-- **`POST /plants/`**: create a plant with plant_text and other details
-- **`POST /predict_plant`**: predict a plant after uploading image
+🎯 Objectives
 
+🧹 Data Preprocessing: Handle missing values, duplicates, and categorical encoding.
 
-# ML Documentation
+📊 Exploratory Data Analysis (EDA): Identify patterns and relationships.
 
-## Transfer learning on custom dataset using EffNetv3 model
-EffNet is a PyTorch-based deep learning model designed for image classification tasks. It uses the EfficientNet architecture as its backbone for feature extraction and classification. This model provides a powerful yet lightweight solution for a variety of image classification applications.
+📈 Descriptive Analysis: Summarize data and visualize key metrics.
 
-### Model Architecture
-EffNet consists of the following components:
+👥 Customer Segmentation: Identify behavioral clusters.
 
-- **Backbone**:  EffNet uses the **`efficientnet_b1`** architecture as its backbone. This backbone is pretrained on a large dataset and can extract meaningful features from input images.
+🤖 Predictive Modeling: Forecast purchase amount.
 
-- **Classifier**: The classifier head of EffNet consists of multiple fully connected layers with batch normalization and PReLU activation functions. It reduces the feature dimensionality to the desired embedding size and performs the final classification.
+💡 Recommendations: Suggest actionable business insights.
 
-### Model Prediction function
+🧾 Data Dictionary
+Column	Description
+User_ID	Unique identifier for each customer
+Product_ID	Product code
+Gender	M/F
+Age	Customer age group
+Occupation	Occupation code
+City_Category	City type (A, B, or C)
+Stay_In_Current_City_Years	Duration of stay
+Marital_Status	0 = Unmarried, 1 = Married
+Product_Category_1	Primary product category
+Product_Category_2	Secondary product category
+Product_Category_3	Tertiary product category
+Purchase	Purchase amount
+<details> <summary>⚙️ <b>Data Preparation Steps</b></summary>
+🧩 1️⃣ Importing Libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-```bash
-def predict(img):
-    if torch.cuda.is_available():
-        DEVICE = torch.device(type='cuda')
-    else:
-        DEVICE = torch.device('cpu')
+🧩 2️⃣ Data Loading & Merging
 
+Loaded two CSVs — demographics and purchase details
 
-    model= EffNet(num_classes=NUM_CLASSES, embedding_size=EMBEDDING_SIZE)
-    model.load_state_dict(torch.load(W_PATH,map_location=torch.device(DEVICE)))
-    image = Image.open(io.BytesIO(img))
-    image = my_transforms(image)
+Merged using User_ID
 
-    model.to(DEVICE)
-    model.eval()
+Saved combined dataset as BlackFridaySales.csv
 
+🧩 3️⃣ Data Cleaning
 
-    with torch.inference_mode():
-        
-        image = image.to(DEVICE)
-        image = image.unsqueeze(0)
-        with autocast():
-            logits = model.forward(image)
+Handled missing values (Product_Category_2, Product_Category_3)
 
-            y_pred = torch.softmax(logits, dim=1).argmax(dim=1).detach().cpu()
+Converted categorical columns (Age, Gender, City_Category)
 
-    return CLASS_LABEL[y_pred.item()]
-```
+Dropped duplicates
+
+🧩 4️⃣ Feature Engineering
+
+Created Total_Products_Bought
+
+Applied Min-Max Scaling to Purchase
+
+One-Hot Encoded categorical variables
+
+</details>
+<details> <summary>📊 <b>Exploratory Data Analysis (EDA)</b></summary>
+🔹 Visualizations
+
+Histogram for purchase distribution
+
+Bar plots for gender & age distribution
+
+Scatter: Purchase vs. Total Products Bought
+
+Box plot for outlier detection
+
+🔹 Key Insights
+Factor	Observation
+Gender	Males spend more than females
+Age Group	26–35 years = highest spenders
+City Category	City B dominates in purchases
+Marital Status	Little difference in spend between married/unmarried
+Stay Duration	Customers living 2+ years spend more
+</details>
+<details> <summary>📈 <b>Descriptive & Statistical Analysis</b></summary>
+🧮 Summary Stats
+
+Mean, Median, Std Dev, Percentiles of numerical features
+
+Frequency count of categorical features
+
+🧪 Hypothesis Tests
+Test	Purpose	Result
+T-Test	Compare Product_Category_1 vs. 2	No significant difference
+ANOVA	Variance across categories	No significant difference
+Chi-Square	Relationship between categories	Weak dependency
+</details>
+<details> <summary>💡 <b>Key Insights & Findings</b></summary>
+Insight	Result
+👥 Highest Spending Age Group	26–35 years
+👨‍🦱 Highest Spending Gender	Male
+🏙️ Highest Spending City	City B
+💍 Higher Spending Marital Status	Married
+📦 Top Product Categories	1, 5, 8, 11, 2
+</details>
+🧠 Next Step — Predictive Modeling
+
+You can now use the preprocessed dataset for:
+
+Regression models: Linear Regression, Random Forest, XGBoost
+
+Evaluation Metrics: MAE, RMSE, R²
+
+Goal: Predict purchase amount and optimize pricing strategies
+
+💼 Business Recommendations
+
+🎯 Target Age 26–35 group with personalized marketing.
+
+🏙️ Focus campaigns on City Category B.
+
+💸 Offer discounts on popular categories to boost repeat sales.
+
+🕒 Reward customers with longer city stays to enhance loyalty.
+
+🧰 Tech Stack
+Tool	Purpose
+🐍 Python 3.10+	Programming language
+📊 Pandas, NumPy	Data manipulation
+📈 Matplotlib, Seaborn	Visualization
+⚙️ Scikit-learn	Feature scaling & encoding
+🧪 SciPy / Statsmodels	Statistical analysis
+💻 Jupyter Notebook / VS Code	Development environment
